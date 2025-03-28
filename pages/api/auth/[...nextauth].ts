@@ -65,8 +65,7 @@ export const authOptions: NextAuthOptions = {
   },
   events: {
     async signIn(message) { console.log('SignIn Event:', message) },
-    async signOut(message) { console.log('SignOut Event:', message) },
-    async error(message) { console.log('Error Event:', message) }
+    async signOut(message) { console.log('SignOut Event:', message) }
   },
   logger: {
     error(code, ...message) {
