@@ -115,7 +115,7 @@ const Home: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <Header photo={session?.user?.image || undefined} />
+      <Header photo={session?.user?.image} />
       <main className='flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-4 sm:mb-0 mb-8'>
         <a
           className='border shadow-xl flex max-w-md rounded-xl mb-6 hover:scale-[1.02] transition duration-300 ease-in-out'
@@ -213,7 +213,7 @@ const Home: NextPage = () => {
             />
           )}
           {restoredImage && originalPhoto && !sideBySide && (
-            <div className='flex sm:space-x-4 sm:flex-row flex-col'>
+            <div className='flex sm:space-x-4 sm:flex-row flex-col space-y-4 sm:space-y-0 w-full'>
               <div>
                 <h2 className='mb-1 font-medium text-lg'>Original Photo</h2>
                 <Image
@@ -224,7 +224,7 @@ const Home: NextPage = () => {
                   height={475}
                 />
               </div>
-              <div className='sm:mt-0 mt-8'>
+              <div>
                 <h2 className='mb-1 font-medium text-lg'>Restored Photo</h2>
                 <a href={restoredImage} target='_blank' rel='noreferrer'>
                   <Image
@@ -245,47 +245,33 @@ const Home: NextPage = () => {
               className='bg-black rounded-full text-white font-medium px-4 pt-2 pb-3 mt-8 hover:bg-black/80 w-40'
             >
               <span className='pt-4'>
-                <LoadingDots color='white' style='large' />
+                <LoadingDots />
               </span>
             </button>
           )}
           {error && (
             <div
-              className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mt-8 max-w-[575px]'
+              className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4'
               role='alert'
             >
-              <div className='bg-red-500 text-white font-bold rounded-t px-4 py-2'>
-                Please try again in 24 hours
-              </div>
-              <div className='border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700'>
-                {error}
-              </div>
+              <span className='block sm:inline'>{error}</span>
             </div>
           )}
-          <div className='flex space-x-2 justify-center'>
-            {originalPhoto && !loading && (
+          <div className='flex justify-center max-w-2xl'>
+            <p className='text-sm text-gray-500'>
+              Have another photo?{' '}
               <button
+                className='font-semibold text-black border-b-2 hover:border-gray-300 transition-all'
                 onClick={() => {
                   setOriginalPhoto(null);
                   setRestoredImage(null);
                   setRestoredLoaded(false);
                   setError(null);
                 }}
-                className='bg-black rounded-full text-white font-medium px-4 py-2 mt-8 hover:bg-black/80 transition'
               >
-                Upload New Photo
+                Restore another photo
               </button>
-            )}
-            {restoredLoaded && (
-              <button
-                onClick={() => {
-                  downloadPhoto(restoredImage!, appendNewToName(photoName!));
-                }}
-                className='bg-white rounded-full text-black border font-medium px-4 py-2 mt-8 hover:bg-gray-100 transition'
-              >
-                Download Restored Photo
-              </button>
-            )}
+            </p>
           </div>
         </div>
       </main>

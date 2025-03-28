@@ -5,16 +5,18 @@ export default function Header({ photo }: { photo?: string | undefined }) {
   return (
     <header className='flex justify-between items-center w-full mt-5 border-b-2 pb-7 sm:px-4 px-2'>
       <Link href='/' className='flex space-x-2'>
-        <Image
-          alt='header text'
-          src='/imageIcon.png'
-          className='sm:w-10 sm:h-10 w-7 h-7'
-          width={20}
-          height={20}
-        />
-        <h1 className='sm:text-3xl text-xl font-bold ml-2 tracking-tight'>
-          restorePhotos.io
-        </h1>
+        <div className='flex space-x-2'>
+          <Image
+            alt='header text'
+            src='/imageIcon.png'
+            className='sm:w-10 sm:h-10 w-7 h-7'
+            width={20}
+            height={20}
+          />
+          <h1 className='sm:text-3xl text-xl font-bold ml-2 tracking-tight'>
+            restorePhotos.io
+          </h1>
+        </div>
       </Link>
       {photo ? (
         <Image
