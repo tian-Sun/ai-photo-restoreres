@@ -24,6 +24,11 @@ export default async function handler(
   req: ExtendedNextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  // 检查 HTTP 方法
+  if (req.method !== 'POST') {
+    return res.status(405).json('Method not allowed. Please use POST.');
+  }
+
   // Check if user is logged in
   const session = await getServerSession(req, res, authOptions);
   if (!session || !session.user) {
@@ -51,6 +56,11 @@ export default async function handler(
           `Your generations will renew in ${hours} hours and ${minutes} minutes. Email hassan@hey.com if you have any questions.`
         );
     }
+  }
+
+  // 检查请求体是否包含必要的数据
+  if (!req.body || !req.body.imageUrl) {
+    return res.status(400).json('Missing imageUrl in request body');
   }
 
   const imageUrl = req.body.imageUrl;
