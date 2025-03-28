@@ -11,8 +11,12 @@ function MyApp({
   session: Session;
 }>) {
   return (
-    <SessionProvider session={session}>
-      <PlausibleProvider domain='restorephotos.io'>
+    <SessionProvider 
+      session={session}
+      refetchInterval={0}
+      refetchOnWindowFocus={true}
+    >
+      <PlausibleProvider domain='ai-photo-restoreres.vercel.app'>
         <Component {...pageProps} />
       </PlausibleProvider>
     </SessionProvider>
