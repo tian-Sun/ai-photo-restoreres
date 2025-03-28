@@ -6,36 +6,24 @@ import { useEffect } from 'react';
 
 export default function SignIn() {
   const router = useRouter();
-  const { callbackUrl, error } = router.query;
+  const { error } = router.query;
 
   useEffect(() => {
-    console.log('SignIn Page Mount:', {
-      callbackUrl,
-      error,
-      query: router.query,
-      pathname: router.pathname,
-      asPath: router.asPath
-    });
-  }, [router, callbackUrl, error]);
+    if (error) {
+      console.error('Auth Error:', {
+        error,
+        query: router.query,
+        asPath: router.asPath
+      });
+    }
+  }, [error, router]);
 
   const handleSignIn = async () => {
-    console.log('Attempting to sign in with Google');
     try {
-      // 确保回调 URL 是完整的
-      const finalCallbackUrl = callbackUrl 
-        ? (callbackUrl as string).startsWith('http')
-          ? callbackUrl as string
-          : `${process.env.NEXT_PUBLIC_URL || 'https://ai-photo-restoreres.vercel.app'}${callbackUrl}`
-        : 'https://ai-photo-restoreres.vercel.app/restore';
-
-      console.log('Final callback URL:', finalCallbackUrl);
-
-      const result = await signIn('google', {
-        callbackUrl: finalCallbackUrl,
-        redirect: true,
+      await signIn('google', {
+        callbackUrl: '/restore',
+        redirect: true
       });
-
-      console.log('SignIn Result:', result);
     } catch (error) {
       console.error('SignIn Error:', error);
     }
@@ -48,14 +36,13 @@ export default function SignIn() {
       </Head>
       {error && (
         <div className="fixed top-4 left-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          登录错误: {error}
-          <br />
-          <small className="text-sm">错误代码: {error}</small>
-          {callbackUrl && (
-            <div className="text-sm mt-2">
-              回调 URL: {callbackUrl as string}
-            </div>
-          )}
+          <div className="font-bold">登录错误</div>
+          <div className="mt-2">
+            {error === 'OAuthCallback' ? '登录验证失败，请重试。' : '登录过程中发生错误，请重试。'}
+          </div>
+          <div className="text-sm mt-2">
+            错误代码: {error}
+          </div>
         </div>
       )}
       <div className="flex flex-col items-center space-y-6">
