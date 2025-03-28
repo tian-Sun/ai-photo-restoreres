@@ -79,22 +79,30 @@ const Home: NextPage = () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     setLoading(true);
 
-    const res = await fetch('/api/generate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ imageUrl: fileUrl }),
-    });
+    try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ imageUrl: fileUrl }),
+      });
 
-    let newPhoto = await res.json();
-    if (res.status !== 200) {
-      setError(newPhoto);
-    } else {
+      const response = await res.json();
+      
+      if (!response.success) {
+        setError(response.error);
+        setLoading(false);
+        return;
+      }
+
       mutate();
-      setRestoredImage(newPhoto);
+      setRestoredImage(response.data);
+    } catch (error) {
+      setError('Failed to process image. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (

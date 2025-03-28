@@ -4,7 +4,13 @@ import redis from '../../utils/redis';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from './auth/[...nextauth]';
 
-type Data = string;
+interface ResponseData {
+  success: boolean;
+  message?: string;
+  data?: any;
+  error?: string;
+}
+
 interface ExtendedNextApiRequest extends NextApiRequest {
   body: {
     imageUrl: string;
@@ -22,17 +28,37 @@ const ratelimit = redis
 
 export default async function handler(
   req: ExtendedNextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<ResponseData>
 ) {
+  // 设置 CORS 头部
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
+
+  // 处理 OPTIONS 请求
+  if (req.method === 'OPTIONS') {
+    return res.status(200).json({ success: true });
+  }
+
   // 检查 HTTP 方法
   if (req.method !== 'POST') {
-    return res.status(405).json('Method not allowed. Please use POST.');
+    return res.status(405).json({
+      success: false,
+      error: 'Method not allowed. Please use POST.'
+    });
   }
 
   // Check if user is logged in
   const session = await getServerSession(req, res, authOptions);
   if (!session || !session.user) {
-    return res.status(500).json('Login to upload.');
+    return res.status(401).json({
+      success: false,
+      error: 'Login to upload.'
+    });
   }
 
   // Rate Limiting by user email
@@ -42,7 +68,7 @@ export default async function handler(
     res.setHeader('X-RateLimit-Limit', result.limit);
     res.setHeader('X-RateLimit-Remaining', result.remaining);
 
-    // Calcualte the remaining time until generations are reset
+    // Calculate the remaining time until generations are reset
     const diff = Math.abs(
       new Date(result.reset).getTime() - new Date().getTime()
     );
@@ -50,60 +76,97 @@ export default async function handler(
     const minutes = Math.floor(diff / 1000 / 60) - hours * 60;
 
     if (!result.success) {
-      return res
-        .status(429)
-        .json(
-          `Your generations will renew in ${hours} hours and ${minutes} minutes. Email hassan@hey.com if you have any questions.`
-        );
+      return res.status(429).json({
+        success: false,
+        error: `Your generations will renew in ${hours} hours and ${minutes} minutes. Email hassan@hey.com if you have any questions.`
+      });
     }
   }
 
   // 检查请求体是否包含必要的数据
   if (!req.body || !req.body.imageUrl) {
-    return res.status(400).json('Missing imageUrl in request body');
+    return res.status(400).json({
+      success: false,
+      error: 'Missing imageUrl in request body'
+    });
   }
 
-  const imageUrl = req.body.imageUrl;
-  // POST request to Replicate to start the image restoration generation process
-  let startResponse = await fetch('https://api.replicate.com/v1/predictions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Token ' + process.env.REPLICATE_API_KEY,
-    },
-    body: JSON.stringify({
-      version:
-        '9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3',
-      input: { img: imageUrl, version: 'v1.4', scale: 2 },
-    }),
-  });
-
-  let jsonStartResponse = await startResponse.json();
-  let endpointUrl = jsonStartResponse.urls.get;
-
-  // GET request to get the status of the image restoration process & return the result when it's ready
-  let restoredImage: string | null = null;
-  while (!restoredImage) {
-    // Loop in 1s intervals until the alt text is ready
-    console.log('polling for result...');
-    let finalResponse = await fetch(endpointUrl, {
-      method: 'GET',
+  try {
+    const imageUrl = req.body.imageUrl;
+    // POST request to Replicate to start the image restoration generation process
+    let startResponse = await fetch('https://api.replicate.com/v1/predictions', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Token ' + process.env.REPLICATE_API_KEY,
       },
+      body: JSON.stringify({
+        version:
+          '9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3',
+        input: { img: imageUrl, version: 'v1.4', scale: 2 },
+      }),
     });
-    let jsonFinalResponse = await finalResponse.json();
 
-    if (jsonFinalResponse.status === 'succeeded') {
-      restoredImage = jsonFinalResponse.output;
-    } else if (jsonFinalResponse.status === 'failed') {
-      break;
-    } else {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    let jsonStartResponse = await startResponse.json();
+    
+    if (!startResponse.ok) {
+      console.error('Replicate API error:', jsonStartResponse);
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to start image restoration process'
+      });
     }
+
+    let endpointUrl = jsonStartResponse.urls.get;
+
+    // GET request to get the status of the image restoration process & return the result when it's ready
+    let restoredImage: string | null = null;
+    while (!restoredImage) {
+      // Loop in 1s intervals until the alt text is ready
+      console.log('polling for result...');
+      let finalResponse = await fetch(endpointUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Token ' + process.env.REPLICATE_API_KEY,
+        },
+      });
+
+      if (!finalResponse.ok) {
+        console.error('Failed to get restoration status');
+        return res.status(500).json({
+          success: false,
+          error: 'Failed to get restoration status'
+        });
+      }
+
+      let jsonFinalResponse = await finalResponse.json();
+
+      if (jsonFinalResponse.status === 'succeeded') {
+        restoredImage = jsonFinalResponse.output;
+      } else if (jsonFinalResponse.status === 'failed') {
+        break;
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    }
+
+    if (!restoredImage) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to restore image'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: restoredImage
+    });
+  } catch (error) {
+    console.error('Error in generate API:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Internal server error'
+    });
   }
-  res
-    .status(200)
-    .json(restoredImage ? restoredImage : 'Failed to restore image');
 }
