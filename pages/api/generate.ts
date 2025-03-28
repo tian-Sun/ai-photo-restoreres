@@ -30,6 +30,13 @@ export default async function handler(
   req: ExtendedNextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
+  console.log('API Request received:', {
+    method: req.method,
+    url: req.url,
+    headers: req.headers,
+    body: req.body,
+  });
+
   // 设置 CORS 头部
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -52,48 +59,63 @@ export default async function handler(
     });
   }
 
-  // Check if user is logged in
-  const session = await getServerSession(req, res, authOptions);
-  if (!session || !session.user) {
-    return res.status(401).json({
-      success: false,
-      error: 'Login to upload.'
-    });
-  }
+  try {
+    console.log('Checking session...');
+    // Check if user is logged in
+    const session = await getServerSession(req, res, authOptions);
+    console.log('Session:', session);
 
-  // Rate Limiting by user email
-  if (ratelimit) {
-    const identifier = session.user.email;
-    const result = await ratelimit.limit(identifier!);
-    res.setHeader('X-RateLimit-Limit', result.limit);
-    res.setHeader('X-RateLimit-Remaining', result.remaining);
-
-    // Calculate the remaining time until generations are reset
-    const diff = Math.abs(
-      new Date(result.reset).getTime() - new Date().getTime()
-    );
-    const hours = Math.floor(diff / 1000 / 60 / 60);
-    const minutes = Math.floor(diff / 1000 / 60) - hours * 60;
-
-    if (!result.success) {
-      return res.status(429).json({
+    if (!session || !session.user) {
+      return res.status(401).json({
         success: false,
-        error: `Your generations will renew in ${hours} hours and ${minutes} minutes. Email hassan@hey.com if you have any questions.`
+        error: 'Login to upload.'
       });
     }
-  }
 
-  // 检查请求体是否包含必要的数据
-  if (!req.body || !req.body.imageUrl) {
-    return res.status(400).json({
-      success: false,
-      error: 'Missing imageUrl in request body'
-    });
-  }
+    // Rate Limiting by user email
+    if (ratelimit) {
+      console.log('Checking rate limit for user:', session.user.email);
+      const identifier = session.user.email;
+      const result = await ratelimit.limit(identifier!);
+      res.setHeader('X-RateLimit-Limit', result.limit);
+      res.setHeader('X-RateLimit-Remaining', result.remaining);
 
-  try {
+      // Calculate the remaining time until generations are reset
+      const diff = Math.abs(
+        new Date(result.reset).getTime() - new Date().getTime()
+      );
+      const hours = Math.floor(diff / 1000 / 60 / 60);
+      const minutes = Math.floor(diff / 1000 / 60) - hours * 60;
+
+      if (!result.success) {
+        return res.status(429).json({
+          success: false,
+          error: `Your generations will renew in ${hours} hours and ${minutes} minutes. Email hassan@hey.com if you have any questions.`
+        });
+      }
+    }
+
+    // 检查请求体是否包含必要的数据
+    if (!req.body || !req.body.imageUrl) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing imageUrl in request body'
+      });
+    }
+
+    console.log('Starting image restoration process...');
     const imageUrl = req.body.imageUrl;
+    
+    if (!process.env.REPLICATE_API_KEY) {
+      console.error('REPLICATE_API_KEY is not set');
+      return res.status(500).json({
+        success: false,
+        error: 'Server configuration error'
+      });
+    }
+
     // POST request to Replicate to start the image restoration generation process
+    console.log('Sending request to Replicate API...');
     let startResponse = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
@@ -107,7 +129,9 @@ export default async function handler(
       }),
     });
 
+    console.log('Replicate API response status:', startResponse.status);
     let jsonStartResponse = await startResponse.json();
+    console.log('Replicate API response:', jsonStartResponse);
     
     if (!startResponse.ok) {
       console.error('Replicate API error:', jsonStartResponse);
@@ -123,7 +147,7 @@ export default async function handler(
     let restoredImage: string | null = null;
     while (!restoredImage) {
       // Loop in 1s intervals until the alt text is ready
-      console.log('polling for result...');
+      console.log('Polling for result...');
       let finalResponse = await fetch(endpointUrl, {
         method: 'GET',
         headers: {
@@ -132,6 +156,7 @@ export default async function handler(
         },
       });
 
+      console.log('Poll response status:', finalResponse.status);
       if (!finalResponse.ok) {
         console.error('Failed to get restoration status');
         return res.status(500).json({
@@ -141,6 +166,7 @@ export default async function handler(
       }
 
       let jsonFinalResponse = await finalResponse.json();
+      console.log('Poll response:', jsonFinalResponse);
 
       if (jsonFinalResponse.status === 'succeeded') {
         restoredImage = jsonFinalResponse.output;
@@ -158,6 +184,7 @@ export default async function handler(
       });
     }
 
+    console.log('Image restoration completed successfully');
     return res.status(200).json({
       success: true,
       data: restoredImage
