@@ -23,7 +23,8 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
       authorization: {
         params: {
-          prompt: "select_account"
+          prompt: "select_account",
+          access_type: "online"
         }
       }
     }),
@@ -33,34 +34,60 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/signin',
     error: '/auth/error',
   },
+  session: {
+    strategy: 'jwt'
+  },
   callbacks: {
-    async session({ session, user }) {
-      console.log('Session Callback:', { session, user });
+    async jwt({ token, user, account }) {
+      if (account && user) {
+        return {
+          ...token,
+          accessToken: account.access_token,
+          userId: user.id,
+        };
+      }
+      return token;
+    },
+    async session({ session, token }) {
       if (session.user) {
-        session.user.id = user.id;
+        session.user.id = token.userId as string;
       }
       return session;
     },
     async redirect({ url, baseUrl }) {
       console.log('Redirect Callback:', { url, baseUrl });
       
-      // 始终使用相对路径
+      // 如果是相对路径，添加基础 URL
       if (url.startsWith('/')) {
-        const finalUrl = `${baseUrl}${url}`;
-        console.log('Redirecting to:', finalUrl);
-        return finalUrl;
+        return `${baseUrl}${url}`;
       }
       
-      console.log('Redirecting to baseUrl:', baseUrl);
+      // 如果 URL 包含基础域名，直接返回
+      if (url.startsWith(baseUrl)) {
+        return url;
+      }
+      
+      // 默认重定向到 restore 页面
       return `${baseUrl}/restore`;
     },
     async signIn({ user, account, profile }) {
-      console.log('SignIn Callback:', {
-        user,
-        account,
-        profile
-      });
-      return true;
+      try {
+        console.log('SignIn Callback:', {
+          userId: user.id,
+          email: user.email,
+          provider: account?.provider
+        });
+        
+        if (!user.email) {
+          console.error('No email provided');
+          return false;
+        }
+        
+        return true;
+      } catch (error) {
+        console.error('SignIn Error:', error);
+        return false;
+      }
     }
   }
 };

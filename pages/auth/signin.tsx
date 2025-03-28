@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 export default function SignIn() {
   const router = useRouter();
-  const { error } = router.query;
+  const { error, callbackUrl } = router.query;
 
   useEffect(() => {
     if (error) {
@@ -20,10 +20,16 @@ export default function SignIn() {
 
   const handleSignIn = async () => {
     try {
-      await signIn('google', {
+      const result = await signIn('google', {
         callbackUrl: '/restore',
-        redirect: true
+        redirect: false
       });
+
+      if (result?.error) {
+        console.error('SignIn Error:', result.error);
+      } else if (result?.url) {
+        router.push(result.url);
+      }
     } catch (error) {
       console.error('SignIn Error:', error);
     }
@@ -38,11 +44,18 @@ export default function SignIn() {
         <div className="fixed top-4 left-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           <div className="font-bold">登录错误</div>
           <div className="mt-2">
-            {error === 'OAuthCallback' ? '登录验证失败，请重试。' : '登录过程中发生错误，请重试。'}
+            {error === 'Callback' 
+              ? '登录验证失败，请确保已在 Google 中授权访问。' 
+              : '登录过程中发生错误，请重试。'}
           </div>
           <div className="text-sm mt-2">
             错误代码: {error}
           </div>
+          {callbackUrl && (
+            <div className="text-sm mt-1">
+              目标页面: {callbackUrl}
+            </div>
+          )}
         </div>
       )}
       <div className="flex flex-col items-center space-y-6">
