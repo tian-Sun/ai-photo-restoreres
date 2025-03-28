@@ -15,7 +15,6 @@ import LoadingDots from '../components/LoadingDots';
 import Toggle from '../components/Toggle';
 import appendNewToName from '../utils/appendNewToName';
 import downloadPhoto from '../utils/downloadPhoto';
-import NSFWFilter from 'nsfw-filter';
 import { useSession, signIn } from 'next-auth/react';
 import useSWR from 'swr';
 import { Rings } from 'react-loader-spinner';
@@ -44,17 +43,7 @@ const Home: NextPage = () => {
     onPreUpload: async (
       file: File
     ): Promise<UploadWidgetOnPreUploadResult | undefined> => {
-      let isSafe = false;
-      try {
-        isSafe = await NSFWFilter.isSafe(file);
-        console.log({ isSafe });
-      } catch (error) {
-        console.error('NSFW predictor threw an error', error);
-      }
-      if (!isSafe) {
-        return { errorMessage: 'Detected a NSFW image which is not allowed.' };
-      }
-      if (data.remainingGenerations === 0) {
+      if (data?.remainingGenerations === 0) {
         return { errorMessage: 'No more generations left for the day.' };
       }
       return undefined;
@@ -115,7 +104,7 @@ const Home: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <Header photo={session?.user?.image} />
+      <Header photo={session?.user?.image || undefined} />
       <main className='flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-4 sm:mb-0 mb-8'>
         <a
           className='border shadow-xl flex max-w-md rounded-xl mb-6 hover:scale-[1.02] transition duration-300 ease-in-out'
@@ -245,7 +234,7 @@ const Home: NextPage = () => {
               className='bg-black rounded-full text-white font-medium px-4 pt-2 pb-3 mt-8 hover:bg-black/80 w-40'
             >
               <span className='pt-4'>
-                <LoadingDots />
+                <LoadingDots color="white" />
               </span>
             </button>
           )}
