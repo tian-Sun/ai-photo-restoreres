@@ -34,6 +34,13 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      // 允许内部URL的重定向
+      if (url.startsWith(baseUrl)) return url;
+      // 允许相对URL的重定向
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      return baseUrl;
+    },
   },
 };
 

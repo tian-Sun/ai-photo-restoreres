@@ -1,8 +1,12 @@
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 export default function SignIn() {
+  const router = useRouter();
+  const { callbackUrl } = router.query;
+
   return (
     <div className="flex h-screen w-screen items-center justify-center">
       <Head>
@@ -18,7 +22,10 @@ export default function SignIn() {
         />
         <h1 className="text-3xl font-bold">登录到 AI Photo Restorer</h1>
         <button
-          onClick={() => signIn('google', { callbackUrl: '/' })}
+          onClick={() => signIn('google', { 
+            callbackUrl: callbackUrl as string || '/restore',
+            redirect: true
+          })}
           className="flex items-center space-x-2 rounded-lg border border-gray-200 px-10 py-2 transition-colors hover:bg-gray-50"
         >
           <Image
