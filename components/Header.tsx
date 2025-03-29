@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 
 export default function Header({ photo }: { photo?: string | undefined }) {
   return (
@@ -18,30 +19,29 @@ export default function Header({ photo }: { photo?: string | undefined }) {
           </h1>
         </div>
       </Link>
-      {photo ? (
-        <Image
-          alt='Profile picture'
-          src={photo}
-          className='w-10 rounded-full'
-          width={32}
-          height={28}
-        />
-      ) : (
-        <div className='flex space-x-6'>
-          <Link
-            href='/'
-            className='border-r border-gray-300 pr-4 space-x-2 hover:text-blue-400 transition hidden sm:flex'
-          >
-            <p className='font-medium text-base'>Home</p>
+      <div className="flex items-center space-x-4">
+        {photo ? (
+          <div className="flex items-center space-x-2">
+            <Image
+              alt="Profile"
+              src={photo}
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+            <button
+              onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+              className="text-sm text-gray-500 hover:text-gray-700"
+            >
+              退出登录
+            </button>
+          </div>
+        ) : (
+          <Link href="/auth/signin" className="flex items-center space-x-2 text-gray-500 hover:text-gray-700">
+            <span>登录</span>
           </Link>
-          <Link
-            href='/restore'
-            className='border-gray-300 pr-4 space-x-2 hover:text-blue-400 transition hidden sm:flex'
-          >
-            <p className='font-medium text-base'>Restore</p>
-          </Link>
-        </div>
-      )}
+        )}
+      </div>
     </header>
   );
 }

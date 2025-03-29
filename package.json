@@ -19,6 +19,7 @@
     "next": "12.3.4",
     "next-auth": "^4.20.1",
     "next-plausible": "^3.11.3",
+    "node-fetch": "^3.3.2",
     "nsfw-filter": "^1.0.4",
     "nsfwjs": "^2.4.2",
     "react": "18.2.0",
@@ -27,7 +28,8 @@
     "react-dom": "18.2.0",
     "react-loader-spinner": "^5.3.4",
     "react-use-measure": "^2.1.1",
-    "swr": "^2.1.0"
+    "swr": "^2.1.0",
+    "vue": "^3.5.13"
   },
   "devDependencies": {
     "@types/node": "18.11.3",
