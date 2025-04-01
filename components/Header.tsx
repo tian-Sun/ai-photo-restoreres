@@ -33,12 +33,12 @@ export default function Header({ photo }: { photo?: string | undefined }) {
               onClick={() => signOut({ callbackUrl: '/auth/signin' })}
               className="text-sm text-gray-500 hover:text-gray-700"
             >
-              Free Trial
+              Sign Out
             </button>
           </div>
         ) : (
           <Link href="/auth/signin" className="flex items-center space-x-2 text-gray-500 hover:text-gray-700">
-            <span>Sign Out</span>
+            <span>Free Trial</span>
           </Link>
         )}
       </div>
