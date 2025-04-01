@@ -30,6 +30,18 @@ class MyDocument extends Document {
             name='twitter:image'
             content='https://restore-photos.vercel.app/og-image.png'
           />
+          {/* Google Analytics */}
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-8MCV4WV1JK"></script>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-8MCV4WV1JK');
+              `,
+            }}
+          />
         </Head>
         <body>
           <Main />
