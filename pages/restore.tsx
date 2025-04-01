@@ -114,7 +114,7 @@ const Home: NextPage = () => {
 
       <Header photo={session?.user?.image || undefined} />
       <main className='flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-4 sm:mb-0 mb-8'>
-        <a
+        {/* <a
           className='border shadow-xl flex max-w-md rounded-xl mb-6 hover:scale-[1.02] transition duration-300 ease-in-out'
           href='https://www.roomgpt.io/'
           target='_blank'
@@ -133,7 +133,7 @@ const Home: NextPage = () => {
               ROOMGPT.IO
             </p>
           </div>
-        </a>
+        </a> */}
         <h1 className='mx-auto max-w-4xl font-display text-4xl font-bold tracking-normal text-slate-900 sm:text-6xl mb-5'>
           Restore any face photo
         </h1>
@@ -182,7 +182,7 @@ const Home: NextPage = () => {
               <div className='h-[250px] flex flex-col items-center space-y-6 max-w-[670px] -mt-8'>
                 <div className='max-w-xl text-gray-600'>
                   Sign in below with Google to create a free account and restore
-                  your photos today. You will be able to restore 2 photos per
+                  your photos today. You will be able to restore 0 photos per
                   day for free.
                 </div>
                 <button

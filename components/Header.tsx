@@ -5,20 +5,20 @@ import { signOut } from 'next-auth/react';
 export default function Header({ photo }: { photo?: string | undefined }) {
   return (
     <header className='flex justify-between items-center w-full mt-5 border-b-2 pb-7 sm:px-4 px-2'>
-      <Link href='/' className='flex space-x-2'>
+      <a href='/' className='flex space-x-2'>
         <div className='flex space-x-2'>
           <Image
             alt='header text'
-            src='/imageIcon.png'
-            className='sm:w-10 sm:h-10 w-7 h-7'
-            width={20}
-            height={20}
+            src='/logo.png'
+            className='sm:w-32 sm:h-32 w-32 h-32'
+            width={32}
+            height={32}
           />
           <h1 className='sm:text-3xl text-xl font-bold ml-2 tracking-tight'>
-            restorePhotos.io
+          facephotorestore.online
           </h1>
         </div>
-      </Link>
+      </a>
       <div className="flex items-center space-x-4">
         {photo ? (
           <div className="flex items-center space-x-2">
@@ -33,12 +33,12 @@ export default function Header({ photo }: { photo?: string | undefined }) {
               onClick={() => signOut({ callbackUrl: '/auth/signin' })}
               className="text-sm text-gray-500 hover:text-gray-700"
             >
-              退出登录
+              Free Trial
             </button>
           </div>
         ) : (
           <Link href="/auth/signin" className="flex items-center space-x-2 text-gray-500 hover:text-gray-700">
-            <span>登录</span>
+            <span>Free Trial</span>
           </Link>
         )}
       </div>
