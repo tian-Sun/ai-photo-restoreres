@@ -32,6 +32,8 @@ const Home: NextPage = () => {
   const { data, mutate } = useSWR('/api/remaining', fetcher);
   const { data: session, status } = useSession();
 
+  const DAILY_USAGE_LIMIT = 1;
+
   const options: UploadWidgetConfig = {
     apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
       ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
@@ -45,6 +47,15 @@ const Home: NextPage = () => {
     ): Promise<UploadWidgetOnPreUploadResult | undefined> => {
       if (data?.remainingGenerations === 0) {
         return { errorMessage: 'No more generations left for the day.' };
+      }
+      if (usageCount >= DAILY_USAGE_LIMIT) {
+        const timeLeft = getTimeLeft();
+        if (timeLeft) {
+          setError(
+            `You have reached your daily limit of ${DAILY_USAGE_LIMIT} restoration. Please try again in ${timeLeft}.`
+          );
+          return { errorMessage: `You have reached your daily limit of ${DAILY_USAGE_LIMIT} restoration. Please try again in ${timeLeft}.` };
+        }
       }
       return undefined;
     },
@@ -182,7 +193,7 @@ const Home: NextPage = () => {
               <div className='h-[250px] flex flex-col items-center space-y-6 max-w-[670px] -mt-8'>
                 <div className='max-w-xl text-gray-600'>
                   Sign in below with Google to create a free account and restore
-                  your photos today. You will be able to restore 0 photos per
+                  your photos today. You will be able to restore 1 photos per
                   day for free.
                 </div>
                 <button
