@@ -46,21 +46,16 @@ const Home: NextPage = () => {
   };
 
   const options: UploadWidgetConfig = {
-    maxFiles: 1,
-    multiple: false,
-    maxFileSize: 10 * 1024 * 1024,
-    accept: { 'image/*': ['.png', '.jpg', '.jpeg', '.gif'] },
-    clientAllowedFormats: ['image'],
-    validateBatch: (files: File[], options: UploadWidgetConfig) => {
-      if (files.length > 1) {
-        return { errorMessage: 'Please upload only one image at a time.' };
-      }
-      if (files[0].size > 10 * 1024 * 1024) {
-        return { errorMessage: 'File size should be less than 10MB.' };
-      }
-      if (!session) {
-        return { errorMessage: 'Please sign in to restore photos.' };
-      }
+    apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+      ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+      : 'free',
+    maxFileCount: 1,
+    mimeTypes: ['image/jpeg', 'image/png', 'image/jpg'],
+    editor: { images: { crop: false } },
+    styles: { colors: { primary: '#000' } },
+    onPreUpload: async (
+      file: File
+    ): Promise<UploadWidgetOnPreUploadResult | undefined> => {
       if (data?.remaining === 0) {
         return { errorMessage: 'No more generations left for the day.' };
       }
