@@ -113,8 +113,9 @@ const Home: NextPage = () => {
         return;
       }
 
-      mutate();
+      await mutate();
       setRestoredImage(response.data);
+      setRestoredLoaded(true);
     } catch (error) {
       setError('Failed to process image. Please try again.');
     } finally {

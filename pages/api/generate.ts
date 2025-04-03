@@ -17,12 +17,13 @@ interface ExtendedNextApiRequest extends NextApiRequest {
   };
 }
 
-// Create a new ratelimiter, that allows 0 requests per day
+// Create a new ratelimiter, that allows 1 request per day
 const ratelimit = redis
   ? new Ratelimit({
       redis: redis,
-      limiter: Ratelimit.fixedWindow(0, '1440 m'),
+      limiter: Ratelimit.fixedWindow(1, '1440 m'),
       analytics: true,
+      prefix: '@upstash/ratelimit'
     })
   : undefined;
 
