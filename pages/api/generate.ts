@@ -78,13 +78,12 @@ export default async function handler(
     if (ratelimit) {
       console.log('Checking rate limit for user:', session.user.email);
       const identifier = session.user.email;
-      const result = await ratelimit.limit(identifier!);
-      console.log('Rate limit result:', result);
       
-      res.setHeader('X-RateLimit-Limit', result.limit);
-      res.setHeader('X-RateLimit-Remaining', result.remaining);
-
-      if (!result.success) {
+      // 先检查当前使用量
+      const currentUsage = await redis?.get(`@upstash/ratelimit:${identifier}:${Math.floor(Date.now() / (24 * 60 * 60 * 1000))}`);
+      console.log('Current usage:', currentUsage);
+      
+      if (Number(currentUsage) >= 1) {
         const resetDate = new Date();
         resetDate.setHours(19, 0, 0, 0);
         if (resetDate.getTime() < Date.now()) {
@@ -99,6 +98,13 @@ export default async function handler(
           error: `You have reached your daily limit. Your generations will renew in ${hours} hours and ${minutes} minutes.`
         });
       }
+
+      // 增加使用计数
+      const result = await ratelimit.limit(identifier!);
+      console.log('Rate limit result after increment:', result);
+      
+      res.setHeader('X-RateLimit-Limit', result.limit);
+      res.setHeader('X-RateLimit-Remaining', result.remaining);
     }
 
     // 检查请求体是否包含必要的数据
