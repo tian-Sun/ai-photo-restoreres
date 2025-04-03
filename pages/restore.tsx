@@ -34,28 +34,39 @@ const Home: NextPage = () => {
 
   const DAILY_USAGE_LIMIT = 1;
 
+  const getTimeLeft = () => {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    const diff = tomorrow.getTime() - now.getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours}h ${minutes}m`;
+  };
+
   const options: UploadWidgetConfig = {
-    apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
-      ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
-      : 'free',
-    maxFileCount: 1,
-    mimeTypes: ['image/jpeg', 'image/png', 'image/jpg'],
-    editor: { images: { crop: false } },
-    styles: { colors: { primary: '#000' } },
-    onPreUpload: async (
-      file: File
-    ): Promise<UploadWidgetOnPreUploadResult | undefined> => {
-      if (data?.remainingGenerations === 0) {
+    maxFiles: 1,
+    multiple: false,
+    maxFileSize: 10 * 1024 * 1024,
+    accept: { 'image/*': ['.png', '.jpg', '.jpeg', '.gif'] },
+    clientAllowedFormats: ['image'],
+    validateBatch: (files: File[], options: UploadWidgetConfig) => {
+      if (files.length > 1) {
+        return { errorMessage: 'Please upload only one image at a time.' };
+      }
+      if (files[0].size > 10 * 1024 * 1024) {
+        return { errorMessage: 'File size should be less than 10MB.' };
+      }
+      if (!session) {
+        return { errorMessage: 'Please sign in to restore photos.' };
+      }
+      if (data?.remaining === 0) {
         return { errorMessage: 'No more generations left for the day.' };
       }
-      if (usageCount >= DAILY_USAGE_LIMIT) {
+      if (data?.remaining !== undefined && data.remaining < 1) {
         const timeLeft = getTimeLeft();
-        if (timeLeft) {
-          setError(
-            `You have reached your daily limit of ${DAILY_USAGE_LIMIT} restoration. Please try again in ${timeLeft}.`
-          );
-          return { errorMessage: `You have reached your daily limit of ${DAILY_USAGE_LIMIT} restoration. Please try again in ${timeLeft}.` };
-        }
+        return { errorMessage: `You have reached your daily limit of ${DAILY_USAGE_LIMIT} restoration. Please try again in ${timeLeft}.` };
       }
       return undefined;
     },
