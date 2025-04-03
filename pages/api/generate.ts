@@ -21,9 +21,10 @@ interface ExtendedNextApiRequest extends NextApiRequest {
 const ratelimit = redis
   ? new Ratelimit({
       redis: redis,
-      limiter: Ratelimit.fixedWindow(1, '1440 m'),
+      limiter: Ratelimit.fixedWindow(1, '24 h'),
       analytics: true,
-      prefix: '@upstash/ratelimit'
+      prefix: '@upstash/ratelimit',
+      ephemeralCache: false
     })
   : undefined;
 
@@ -78,20 +79,24 @@ export default async function handler(
       console.log('Checking rate limit for user:', session.user.email);
       const identifier = session.user.email;
       const result = await ratelimit.limit(identifier!);
+      console.log('Rate limit result:', result);
+      
       res.setHeader('X-RateLimit-Limit', result.limit);
       res.setHeader('X-RateLimit-Remaining', result.remaining);
 
-      // Calculate the remaining time until generations are reset
-      const diff = Math.abs(
-        new Date(result.reset).getTime() - new Date().getTime()
-      );
-      const hours = Math.floor(diff / 1000 / 60 / 60);
-      const minutes = Math.floor(diff / 1000 / 60) - hours * 60;
-
       if (!result.success) {
+        const resetDate = new Date();
+        resetDate.setHours(19, 0, 0, 0);
+        if (resetDate.getTime() < Date.now()) {
+          resetDate.setDate(resetDate.getDate() + 1);
+        }
+        const diff = Math.abs(resetDate.getTime() - new Date().getTime());
+        const hours = Math.floor(diff / 1000 / 60 / 60);
+        const minutes = Math.floor((diff / 1000 / 60) % 60);
+
         return res.status(429).json({
           success: false,
-          error: `Your generations will renew in ${hours} hours and ${minutes} minutes. Email hassan@hey.com if you have any questions.`
+          error: `You have reached your daily limit. Your generations will renew in ${hours} hours and ${minutes} minutes.`
         });
       }
     }

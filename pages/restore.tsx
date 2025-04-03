@@ -29,7 +29,11 @@ const Home: NextPage = () => {
   const [photoName, setPhotoName] = useState<string | null>(null);
 
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, mutate } = useSWR('/api/remaining', fetcher);
+  const { data, mutate } = useSWR('/api/remaining', fetcher, {
+    refreshInterval: 0,
+    revalidateOnFocus: true,
+    shouldRetryOnError: true
+  });
   const { data: session, status } = useSession();
 
   const DAILY_USAGE_LIMIT = 1;
@@ -95,6 +99,7 @@ const Home: NextPage = () => {
   async function generatePhoto(fileUrl: string) {
     await new Promise((resolve) => setTimeout(resolve, 500));
     setLoading(true);
+    setError(null);
 
     try {
       const res = await fetch('/api/generate', {
@@ -110,14 +115,16 @@ const Home: NextPage = () => {
       if (!response.success) {
         setError(response.error);
         setLoading(false);
+        await mutate();
         return;
       }
 
-      await mutate();
       setRestoredImage(response.data);
       setRestoredLoaded(true);
+      await mutate();
     } catch (error) {
       setError('Failed to process image. Please try again.');
+      await mutate();
     } finally {
       setLoading(false);
     }
