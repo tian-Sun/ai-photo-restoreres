@@ -36,7 +36,7 @@ const Home: NextPage = () => {
   });
   const { data: session, status } = useSession();
 
-  const DAILY_USAGE_LIMIT = 1;
+  const DAILY_USAGE_LIMIT = 2;
 
   const getTimeLeft = () => {
     const now = new Date();
@@ -57,6 +57,7 @@ const Home: NextPage = () => {
     mimeTypes: ['image/jpeg', 'image/png', 'image/jpg'],
     editor: { images: { crop: false } },
     styles: { colors: { primary: '#000' } },
+    layout: 'modal',
     onPreUpload: async (
       file: File
     ): Promise<UploadWidgetOnPreUploadResult | undefined> => {
@@ -72,28 +73,40 @@ const Home: NextPage = () => {
   };
 
   const UploadDropZone = () => (
-    <UploadDropzone
-      options={options}
-      onUpdate={({ uploadedFiles }) => {
-        if (uploadedFiles.length !== 0) {
-          const image = uploadedFiles[0];
-          const imageName = image.originalFile.originalFileName;
-          const imageUrl = UrlBuilder.url({
-            accountId: image.accountId,
-            filePath: image.filePath,
-            options: {
-              transformation: 'preset',
-              transformationPreset: 'thumbnail',
-            },
-          });
-          setPhotoName(imageName);
-          setOriginalPhoto(imageUrl);
-          generatePhoto(imageUrl);
-        }
-      }}
-      width='670px'
-      height='250px'
-    />
+    <div className="relative w-full">
+      <UploadDropzone
+        options={options}
+        onUpdate={({ uploadedFiles }) => {
+          if (uploadedFiles.length !== 0) {
+            const image = uploadedFiles[0];
+            const imageName = image.originalFile.originalFileName;
+            const imageUrl = UrlBuilder.url({
+              accountId: image.accountId,
+              filePath: image.filePath,
+              options: {
+                transformation: 'preset',
+                transformationPreset: 'thumbnail',
+              },
+            });
+            setPhotoName(imageName);
+            setOriginalPhoto(imageUrl);
+            generatePhoto(imageUrl);
+          }
+        }}
+        width='670px'
+        height='250px'
+      />
+      {(!data || data.remainingGenerations <= 0) && (
+        <div className="absolute inset-0 flex items-center justify-center bg-red-50 border-2 border-red-400 rounded-lg">
+          <div className="flex items-center space-x-2 text-red-700">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <span>No more generations left for the day.</span>
+          </div>
+        </div>
+      )}
+    </div>
   );
 
   async function generatePhoto(fileUrl: string) {
@@ -148,11 +161,7 @@ const Home: NextPage = () => {
             <span className='font-semibold'>
               {data.remainingGenerations} generations
             </span>{' '}
-            left today. Your generation
-            {Number(data.remainingGenerations) > 1 ? 's' : ''} will renew in{' '}
-            <span className='font-semibold'>
-              {data.hours} hours and {data.minutes} minutes.
-            </span>
+            left.
           </p>
         )}
         <div className='flex justify-between items-center w-full flex-col mt-4'>
@@ -187,7 +196,7 @@ const Home: NextPage = () => {
               <div className='h-[250px] flex flex-col items-center space-y-6 max-w-[670px] -mt-8'>
                 <div className='max-w-xl text-gray-600'>
                   Sign in below with Google to create a free account and restore
-                  your photos today. You will be able to restore 1 photos per
+                  your photos today. You will be able to restore 2 photos per
                   day for free.
                 </div>
                 <button

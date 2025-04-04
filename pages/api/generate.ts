@@ -17,11 +17,11 @@ interface ExtendedNextApiRequest extends NextApiRequest {
   };
 }
 
-// Create a new ratelimiter, that allows 1 request per day
+// Create a new ratelimiter, that allows 2 requests per day
 const ratelimit = redis
   ? new Ratelimit({
       redis: redis,
-      limiter: Ratelimit.fixedWindow(1, '24 h'),
+      limiter: Ratelimit.fixedWindow(2, '24 h'),
       analytics: true,
       prefix: '@upstash/ratelimit',
       ephemeralCache: false
@@ -83,7 +83,7 @@ export default async function handler(
       const currentUsage = await redis?.get(`@upstash/ratelimit:${identifier}:${Math.floor(Date.now() / (24 * 60 * 60 * 1000))}`);
       console.log('Current usage:', currentUsage);
       
-      if (Number(currentUsage) >= 1) {
+      if (Number(currentUsage) >= 2) {
         const resetDate = new Date();
         resetDate.setHours(19, 0, 0, 0);
         if (resetDate.getTime() < Date.now()) {

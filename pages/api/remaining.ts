@@ -15,15 +15,12 @@ export default async function handler(
 
   // Query the redis database by email to get the number of generations left
   const identifier = session.user.email;
-  const bucket = Math.floor(Date.now() / (24 * 60 * 60 * 1000));
+  const windowDuration = 24 * 60 * 60 * 1000;
+  const bucket = Math.floor(Date.now() / windowDuration);
 
   // 获取当前使用量
-  const currentUsage = await redis?.get(`@upstash/ratelimit:${identifier}:${bucket}`) || '0';
-  console.log('Current usage for user:', identifier, 'is:', currentUsage);
-
-  // 计算剩余次数
-  const remainingGenerations = Math.max(0, 1 - Number(currentUsage));
-  console.log('Remaining generations:', remainingGenerations);
+  const usedGenerations = await redis?.get(`@upstash/ratelimit:${identifier!}:${bucket}`) || 0;
+  console.log('Current usage for user:', identifier, 'is:', usedGenerations);
 
   // 计算重置时间
   const resetDate = new Date();
@@ -34,6 +31,10 @@ export default async function handler(
   const diff = Math.abs(resetDate.getTime() - new Date().getTime());
   const hours = Math.floor(diff / 1000 / 60 / 60);
   const minutes = Math.floor((diff / 1000 / 60) % 60);
+
+  // 使用原始逻辑计算剩余次数
+  const remainingGenerations = 2 - Number(usedGenerations);
+  console.log('Remaining generations:', remainingGenerations);
 
   return res.status(200).json({ remainingGenerations, hours, minutes });
 }
