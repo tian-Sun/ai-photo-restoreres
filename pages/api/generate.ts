@@ -81,7 +81,7 @@ export default async function handler(
       const bucket = Math.floor(Date.now() / (24 * 60 * 60 * 1000));
       
       // 先检查当前使用量
-      const currentUsage = await redis?.get(`@upstash/ratelimit:${identifier}:${bucket}`);
+      const currentUsage = await redis?.get(`user_daily_usage:${identifier}:${bucket}`);
       console.log('Current usage:', currentUsage);
       
       if (Number(currentUsage) >= 2) {
@@ -101,18 +101,22 @@ export default async function handler(
       }
 
       // 增加使用计数
-      const result = await ratelimit.limit(identifier!);
-      console.log('Rate limit result after increment:', result);
+      await redis?.incr(`user_daily_usage:${identifier}:${bucket}`);
+      await redis?.expire(`user_daily_usage:${identifier}:${bucket}`, 24 * 60 * 60); // 24小时后过期
       
-      if (!result.success) {
+      const newUsage = await redis?.get(`user_daily_usage:${identifier}:${bucket}`);
+      console.log('New usage after increment:', newUsage);
+      
+      if (Number(newUsage) > 2) {
         return res.status(429).json({
           success: false,
           error: 'No more generations left for the day.'
         });
       }
 
-      res.setHeader('X-RateLimit-Limit', result.limit);
-      res.setHeader('X-RateLimit-Remaining', result.remaining);
+      const remaining = 2 - Number(newUsage);
+      res.setHeader('X-RateLimit-Limit', 2);
+      res.setHeader('X-RateLimit-Remaining', remaining);
     }
 
     // 检查请求体是否包含必要的数据

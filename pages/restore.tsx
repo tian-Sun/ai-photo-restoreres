@@ -50,14 +50,32 @@ const Home: NextPage = () => {
   };
 
   const options: UploadWidgetConfig = {
-    apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
-      ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
-      : 'free',
+    apiKey: process.env.NEXT_PUBLIC_UPLOAD_API_KEY || 'free',
     maxFileCount: 1,
     mimeTypes: ['image/jpeg', 'image/png', 'image/jpg'],
     editor: { images: { crop: false } },
     styles: { colors: { primary: '#000' } },
+    path: {
+      folderPath: '/uploads'
+    },
     layout: 'modal',
+    onUpdate: ({ uploadedFiles }) => {
+      if (uploadedFiles.length !== 0) {
+        const image = uploadedFiles[0];
+        const imageName = image.originalFile.originalFileName;
+        const imageUrl = UrlBuilder.url({
+          accountId: image.accountId,
+          filePath: image.filePath,
+          options: {
+            transformation: 'preset',
+            transformationPreset: 'thumbnail',
+          },
+        });
+        setPhotoName(imageName);
+        setOriginalPhoto(imageUrl);
+        generatePhoto(imageUrl);
+      }
+    },
     onPreUpload: async (
       file: File
     ): Promise<UploadWidgetOnPreUploadResult | undefined> => {
@@ -77,23 +95,6 @@ const Home: NextPage = () => {
       <div className="relative w-[670px]">
         <UploadDropzone
           options={options}
-          onUpdate={({ uploadedFiles }) => {
-            if (uploadedFiles.length !== 0) {
-              const image = uploadedFiles[0];
-              const imageName = image.originalFile.originalFileName;
-              const imageUrl = UrlBuilder.url({
-                accountId: image.accountId,
-                filePath: image.filePath,
-                options: {
-                  transformation: 'preset',
-                  transformationPreset: 'thumbnail',
-                },
-              });
-              setPhotoName(imageName);
-              setOriginalPhoto(imageUrl);
-              generatePhoto(imageUrl);
-            }
-          }}
           width='670px'
           height='250px'
         />
