@@ -78,9 +78,10 @@ export default async function handler(
     if (ratelimit) {
       console.log('Checking rate limit for user:', session.user.email);
       const identifier = session.user.email;
+      const bucket = Math.floor(Date.now() / (24 * 60 * 60 * 1000));
       
       // 先检查当前使用量
-      const currentUsage = await redis?.get(`@upstash/ratelimit:${identifier}:${Math.floor(Date.now() / (24 * 60 * 60 * 1000))}`);
+      const currentUsage = await redis?.get(`@upstash/ratelimit:${identifier}:${bucket}`);
       console.log('Current usage:', currentUsage);
       
       if (Number(currentUsage) >= 2) {
@@ -95,7 +96,7 @@ export default async function handler(
 
         return res.status(429).json({
           success: false,
-          error: `You have reached your daily limit. Your generations will renew in ${hours} hours and ${minutes} minutes.`
+          error: `No more generations left for the day.`
         });
       }
 
@@ -103,6 +104,13 @@ export default async function handler(
       const result = await ratelimit.limit(identifier!);
       console.log('Rate limit result after increment:', result);
       
+      if (!result.success) {
+        return res.status(429).json({
+          success: false,
+          error: 'No more generations left for the day.'
+        });
+      }
+
       res.setHeader('X-RateLimit-Limit', result.limit);
       res.setHeader('X-RateLimit-Remaining', result.remaining);
     }
