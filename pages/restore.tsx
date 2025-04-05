@@ -55,9 +55,6 @@ const Home: NextPage = () => {
     mimeTypes: ['image/jpeg', 'image/png', 'image/jpg'],
     editor: { images: { crop: false } },
     styles: { colors: { primary: '#000' } },
-    path: {
-      folderPath: '/uploads'
-    },
     layout: 'modal',
     onUpdate: ({ uploadedFiles }) => {
       if (uploadedFiles.length !== 0) {
