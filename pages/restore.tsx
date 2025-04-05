@@ -49,6 +49,35 @@ const Home: NextPage = () => {
     return `${hours}h ${minutes}m`;
   };
 
+  const generatePhoto = async (fileUrl: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      setRestoredImage(null);
+
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ imageUrl: fileUrl }),
+      });
+
+      let jsonResponse = await response.json();
+
+      if (response.status !== 200) {
+        throw new Error(jsonResponse.error || 'Error occurred while generating photo');
+      }
+
+      setRestoredImage(jsonResponse.data);
+      await mutate();
+    } catch (err: any) {
+      setError(err.message || 'An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const options: UploadWidgetConfig = {
     apiKey: process.env.NEXT_PUBLIC_UPLOAD_API_KEY || 'free',
     maxFileCount: 1,
@@ -56,7 +85,7 @@ const Home: NextPage = () => {
     editor: { images: { crop: false } },
     styles: { colors: { primary: '#000' } },
     layout: 'modal',
-    onUpdate: ({ uploadedFiles }) => {
+    onUpdate: async ({ uploadedFiles }) => {
       if (uploadedFiles.length !== 0) {
         const image = uploadedFiles[0];
         const imageName = image.originalFile.originalFileName;
@@ -70,7 +99,8 @@ const Home: NextPage = () => {
         });
         setPhotoName(imageName);
         setOriginalPhoto(imageUrl);
-        generatePhoto(imageUrl);
+        await generatePhoto(imageUrl);
+        await mutate();
       }
     },
     onPreUpload: async (
@@ -108,40 +138,6 @@ const Home: NextPage = () => {
       </div>
     </div>
   );
-
-  async function generatePhoto(fileUrl: string) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setLoading(true);
-    setError(null);
-
-    try {
-      const res = await fetch('/api/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ imageUrl: fileUrl }),
-      });
-
-      const response = await res.json();
-      
-      if (!response.success) {
-        setError(response.error);
-        setLoading(false);
-        await mutate();
-        return;
-      }
-
-      setRestoredImage(response.data);
-      setRestoredLoaded(true);
-      await mutate();
-    } catch (error) {
-      setError('Failed to process image. Please try again.');
-      await mutate();
-    } finally {
-      setLoading(false);
-    }
-  }
 
   return (
     <div className='flex max-w-6xl mx-auto flex-col items-center justify-center py-2 min-h-screen'>
