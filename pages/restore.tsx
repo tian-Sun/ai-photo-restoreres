@@ -120,19 +120,26 @@ const Home: NextPage = () => {
   const UploadDropZone = () => (
     <div className="flex justify-center items-center w-full">
       <div className="relative w-[670px]">
-        <UploadDropzone
-          options={options}
-          width='670px'
-          height='250px'
-        />
-        {(!data || data.remainingGenerations <= 0) && (
-          <div className="absolute inset-0 flex items-center justify-center bg-red-50 border-2 border-red-400 rounded-lg">
-            <div className="flex items-center space-x-2 text-red-700">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              <span>No more generations left for the day.</span>
-            </div>
+        {(data && data.remainingGenerations > 0) ? (
+          <UploadDropzone
+            options={options}
+            width='670px'
+            height='250px'
+          />
+        ) : (
+          <div className="w-full h-[250px] flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-lg bg-gray-50">
+            <button
+              disabled
+              className="px-6 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-300 rounded-md cursor-not-allowed"
+            >
+              Upload an Image
+            </button>
+            <p className="mt-2 text-sm text-gray-500">
+              Please wait until tomorrow for more generations
+            </p>
+            <p className="text-xs text-gray-400 mt-1">
+              Next reset in: {data?.hours}h {data?.minutes}m
+            </p>
           </div>
         )}
       </div>
