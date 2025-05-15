@@ -66,41 +66,46 @@ const Home: NextPage = () => {
           </div>
         </div>
       </main>
-      <Footer />
-      <section className="max-w-4xl mx-auto px-4 py-12 text-left">
-        <h2 className="text-2xl font-bold mt-12 mb-4">Restore All Kinds of Damaged Photos</h2>
-        <p className="mb-2 text-lg">Fix Blurry, Faded, Torn, and Black-and-White Pictures with AI</p>
-        <h3 className="text-xl font-semibold mt-6 mb-2">Photo Damage Types We Fix</h3>
-        <ul className="list-disc pl-6 mb-4 text-base">
-          <li>Can AI repair torn or scratched photos?</li>
-          <li>How to restore heavily faded black-and-white images?</li>
-          <li>What about pixelated or low-resolution old photos?</li>
+      
+      <section className="max-w-4xl mx-auto px-6 py-12 mb-12 bg-white/80 rounded-2xl shadow-lg border border-gray-100">
+        <hr className="mb-8 border-gray-200" />
+        <h2 className="text-3xl font-extrabold mt-8 mb-4 text-gray-900">Restore All Kinds of Damaged Photos</h2>
+        <p className="mb-4 text-lg text-gray-700">Fix Blurry, Faded, Torn, and Black-and-White Pictures with AI</p>
+        <h3 className="text-xl font-bold mt-6 mb-2 text-gray-800">Photo Damage Types We Fix</h3>
+        <ul className="list-none pl-0 mb-6 text-base text-gray-700 space-y-2">
+          <li className="flex items-start"><span className="mr-2 text-blue-500">•</span>Can AI repair torn or scratched photos?</li>
+          <li className="flex items-start"><span className="mr-2 text-blue-500">•</span>How to restore heavily faded black-and-white images?</li>
+          <li className="flex items-start"><span className="mr-2 text-blue-500">•</span>What about pixelated or low-resolution old photos?</li>
         </ul>
-        <h2 className="text-2xl font-bold mt-12 mb-4">Recover Photos from Any Device or Cloud</h2>
-        <p className="mb-2 text-lg">iPhone, Android, iCloud, Google Photos — We've Got You Covered</p>
-        <h3 className="text-xl font-semibold mt-6 mb-2">Photo Source Recovery Tips</h3>
-        <ul className="list-disc pl-6 mb-4 text-base">
-          <li>Restore recently deleted photos from iPhone or Android</li>
-          <li>Recover photos emptied from Google Photos bin</li>
-          <li>Restore lost pictures from iCloud or OneDrive</li>
+        <hr className="my-8 border-gray-200" />
+        <h2 className="text-3xl font-extrabold mt-8 mb-4 text-gray-900">Recover Photos from Any Device or Cloud</h2>
+        <p className="mb-4 text-lg text-gray-700">iPhone, Android, iCloud, Google Photos — We've Got You Covered</p>
+        <h3 className="text-xl font-bold mt-6 mb-2 text-gray-800">Photo Source Recovery Tips</h3>
+        <ul className="list-none pl-0 mb-6 text-base text-gray-700 space-y-2">
+          <li className="flex items-start"><span className="mr-2 text-green-500">•</span>Restore recently deleted photos from iPhone or Android</li>
+          <li className="flex items-start"><span className="mr-2 text-green-500">•</span>Recover photos emptied from Google Photos bin</li>
+          <li className="flex items-start"><span className="mr-2 text-green-500">•</span>Restore lost pictures from iCloud or OneDrive</li>
         </ul>
-        <h2 className="text-2xl font-bold mt-12 mb-4">Why Use Face Photo Restore?</h2>
-        <p className="mb-2 text-lg">100% Free | No Signup | Powered by AI | One-Click Repair</p>
-        <h3 className="text-xl font-semibold mt-6 mb-2">Tech Highlights</h3>
-        <ul className="list-disc pl-6 mb-4 text-base">
-          <li>State-of-the-art AI model, including HuggingFace & local deployment</li>
-          <li>No need for Photoshop or photo editing skills</li>
-          <li>Supports photo colorization and upscaling</li>
+        <hr className="my-8 border-gray-200" />
+        <h2 className="text-3xl font-extrabold mt-8 mb-4 text-gray-900">Why Use Face Photo Restore?</h2>
+        <p className="mb-4 text-lg text-gray-700">100% Free | No Signup | Powered by AI | One-Click Repair</p>
+        <h3 className="text-xl font-bold mt-6 mb-2 text-gray-800">Tech Highlights</h3>
+        <ul className="list-none pl-0 mb-6 text-base text-gray-700 space-y-2">
+          <li className="flex items-start"><span className="mr-2 text-purple-500">•</span>State-of-the-art AI model, including HuggingFace & local deployment</li>
+          <li className="flex items-start"><span className="mr-2 text-purple-500">•</span>No need for Photoshop or photo editing skills</li>
+          <li className="flex items-start"><span className="mr-2 text-purple-500">•</span>Supports photo colorization and upscaling</li>
         </ul>
-        <h2 className="text-2xl font-bold mt-12 mb-4">Frequently Asked Questions</h2>
-        <p className="mb-2 text-lg">Can AI Really Fix My Old Photos? What If My Photos Were Deleted Years Ago?</p>
-        <h3 className="text-xl font-semibold mt-6 mb-2">User Questions</h3>
-        <ul className="list-disc pl-6 mb-4 text-base">
-          <li>Is it really free to use?</li>
-          <li>Can I restore multiple photos at once?</li>
-          <li>Is my uploaded photo safe and private?</li>
+        <hr className="my-8 border-gray-200" />
+        <h2 className="text-3xl font-extrabold mt-8 mb-4 text-gray-900">Frequently Asked Questions</h2>
+        <p className="mb-4 text-lg text-gray-700">Can AI Really Fix My Old Photos? What If My Photos Were Deleted Years Ago?</p>
+        <h3 className="text-xl font-bold mt-6 mb-2 text-gray-800">User Questions</h3>
+        <ul className="list-none pl-0 mb-2 text-base text-gray-700 space-y-2">
+          <li className="flex items-start"><span className="mr-2 text-orange-500">•</span>Is it really free to use?</li>
+          <li className="flex items-start"><span className="mr-2 text-orange-500">•</span>Can I restore multiple photos at once?</li>
+          <li className="flex items-start"><span className="mr-2 text-orange-500">•</span>Is my uploaded photo safe and private?</li>
         </ul>
       </section>
+      <Footer />
     </div>
   );
 };
