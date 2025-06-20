@@ -20,11 +20,11 @@ export default function Header({ photo }: { photo?: string | undefined }) {
         </div>
       </a>
       <div className="flex items-center space-x-4">
-        {photo ? (
+      {photo ? (
           <div className="flex items-center space-x-2">
-            <Image
+        <Image
               alt="Profile"
-              src={photo}
+          src={photo}
               width={40}
               height={40}
               className="rounded-full"
@@ -41,7 +41,7 @@ export default function Header({ photo }: { photo?: string | undefined }) {
             <span>Free Trial</span>
           </Link>
         )}
-      </div>
+        </div>
     </header>
   );
 }

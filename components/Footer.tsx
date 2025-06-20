@@ -32,6 +32,18 @@ export default function Footer() {
       </div>
       <div className='flex space-x-4 pb-4 sm:pb-0 pr-6'>
         <Link
+          href='/terms'
+          className='text-sm text-gray-600 hover:text-gray-800 transition-colors'
+        >
+          Terms of Service
+        </Link>
+        <Link
+          href='/privacy'
+          className='text-sm text-gray-600 hover:text-gray-800 transition-colors'
+        >
+          Privacy Policy
+        </Link>
+        <Link
           href='https://x.com/wendy_Tianf'
           className='group'
           aria-label='Wendy on Twitter'

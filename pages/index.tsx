@@ -11,31 +11,31 @@ const Home: NextPage = () => {
   return (
     <div className='flex max-w-6xl mx-auto flex-col items-center justify-center py-2 min-h-screen'>
       <Head>
-        <title>Restore Old Photos Online for Free | AI Photo Restoration Tool - Face Photo Restore
+        <title>Face Photo Restore - AI Face Enhancement & Restoration | Free Online Tool
         </title>
-        <meta name="description" content="Face Photo Restore is an AI-powered online tool that restores blurry, damaged, faded, or black-and-white photos for free. Recover deleted photos from iPhone, Android, iCloud, Google Photos, and more — no software or login required." />
-        <meta name="keywords" content="restore old photos, ai photo restore, free online photo restoration, photo recovery iphone, repair blurry photos, old photo enhancer, damaged photo fix" />
+        <meta name="description" content="Face Photo Restore transforms blurry, damaged, and faded face photos with AI-powered face enhancement. Specialized in facial restoration, bringing old portraits back to life with crystal-clear results." />
+        <meta name="keywords" content="face photo restore, face enhancement, ai face restore, blurry face fix, old photo restoration, facial photo repair, portrait enhancement, ai face improvement" />
       </Head>
       <Header />
       <main className='flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-20'>
         <h1 className='mx-auto max-w-4xl font-display text-5xl font-bold tracking-normal text-slate-900 sm:text-7xl'>
-        Bring Your Old Memories Back to Life
+        Face Photo Restore:
         {' '}
           <span className='relative whitespace-nowrap text-[#3290EE]'>
             <SquigglyLines />
-            <span className='relative'>with AI Magic</span>
+            <span className='relative'>Transform Faces Into Clear</span>
           </span>
         </h1>
 
         <p className='mx-auto mt-12 max-w-xl text-lg text-slate-700 leading-7'>
-          Experience the power of AI in photo enhancement. Our advanced technology helps restore and improve your precious memories with professional quality results.
+          Face Photo Restore specializes in AI-powered facial enhancement and restoration. Turn blurry, damaged, or faded face photos into sharp, clear portraits that bring your memories back to life.
         </p>
         
         <div className='flex justify-center space-x-4'>
           <a
             className='bg-black rounded-xl text-white font-medium px-4 py-3 sm:mt-10 mt-8 hover:bg-black/80'
             href='/restore'
-          >Restore Now
+          >Start Face Photo Restore
           </a>
         </div>
 
@@ -43,9 +43,9 @@ const Home: NextPage = () => {
           <div className='flex flex-col space-y-10 mt-4 mb-16'>
             <div className='flex sm:space-x-8 sm:flex-row flex-col'>
               <div>
-                <h2 className='mb-1 font-medium text-lg'>Before Enhancement</h2>
+                <h2 className='mb-1 font-medium text-lg'>Before Face Photo Restore</h2>
                 <Image
-                  alt='Original photo example'
+                  alt='Blurry face photo before Face Photo Restore enhancement'
                   src='/michael.png'
                   className='w-96 h-96 rounded-2xl shadow-lg'
                   width={400}
@@ -53,9 +53,9 @@ const Home: NextPage = () => {
                 />
               </div>
               <div className='sm:mt-0 mt-8'>
-                <h2 className='mb-1 font-medium text-lg'>After Enhancement</h2>
+                <h2 className='mb-1 font-medium text-lg'>After Face Photo Restore</h2>
                 <Image
-                  alt='Enhanced photo example'
+                  alt='Enhanced face photo after Face Photo Restore processing'
                   width={400}
                   height={400}
                   src='/michael-new.png'
@@ -67,42 +67,141 @@ const Home: NextPage = () => {
         </div>
       </main>
       
+      {/* Pricing Section */}
+      <section className="max-w-4xl mx-auto px-6 py-12 mb-12 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl shadow-lg border border-blue-200">
+        <h2 className="text-3xl font-extrabold text-center mb-8 text-gray-900">Choose Your Face Photo Restore Plan</h2>
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Free Plan */}
+          <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-gray-200 hover:border-blue-300 transition-all duration-300">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Free Face Photo Restore</h3>
+              <div className="text-4xl font-bold text-blue-600 mb-4">$0</div>
+              <p className="text-gray-600 mb-6">Perfect for occasional face photo restoration</p>
+            </div>
+            <ul className="space-y-3 mb-8">
+              <li className="flex items-center">
+                <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="text-gray-700">2 face photo restorations per day</span>
+              </li>
+              <li className="flex items-center">
+                <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="text-gray-700">AI-powered facial restoration</span>
+              </li>
+              <li className="flex items-center">
+                <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="text-gray-700">No credit card required</span>
+              </li>
+              <li className="flex items-center">
+                <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="text-gray-700">Instant access to Face Photo Restore</span>
+              </li>
+            </ul>
+            <div className="text-center">
+              <Link href="/restore" className="inline-block bg-gray-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors duration-300">
+                Start Free Face Photo Restore
+              </Link>
+            </div>
+          </div>
+
+          {/* Pro Plan */}
+          <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-blue-500 relative hover:border-blue-600 transition-all duration-300">
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">Most Popular</span>
+            </div>
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Pro Face Photo Restore</h3>
+              <div className="text-4xl font-bold text-blue-600 mb-4">$15</div>
+              <p className="text-gray-600 mb-6">per month</p>
+            </div>
+            <ul className="space-y-3 mb-8">
+              <li className="flex items-center">
+                <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="text-gray-700">500 face photo restorations per month</span>
+              </li>
+              <li className="flex items-center">
+                <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="text-gray-700">Priority processing</span>
+              </li>
+              <li className="flex items-center">
+                <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="text-gray-700">Advanced facial AI models</span>
+              </li>
+              <li className="flex items-center">
+                <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span className="text-gray-700">Cancel anytime</span>
+              </li>
+            </ul>
+            <div className="text-center">
+              <Link href="/restore" className="inline-block bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                Upgrade to Pro Face Photo Restore
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div className="text-center mt-8">
+          <p className="text-gray-600 text-sm">
+            All Face Photo Restore plans include secure processing and privacy protection. 
+            <Link href="/privacy" className="text-blue-600 hover:underline ml-1">Learn more</Link>
+          </p>
+        </div>
+      </section>
+      
       <section className="max-w-4xl mx-auto px-6 py-12 mb-12 bg-white/80 rounded-2xl shadow-lg border border-gray-100">
         <hr className="mb-8 border-gray-200" />
-        <h2 className="text-3xl font-extrabold mt-8 mb-4 text-gray-900">Restore All Kinds of Damaged Photos</h2>
-        <p className="mb-4 text-lg text-gray-700">Fix Blurry, Faded, Torn, and Black-and-White Pictures with AI</p>
-        <h3 className="text-xl font-bold mt-6 mb-2 text-gray-800">Photo Damage Types We Fix</h3>
+        <h2 className="text-3xl font-extrabold mt-8 mb-4 text-gray-900">Face Photo Restore: Specialized in Facial Enhancement</h2>
+        <p className="mb-4 text-lg text-gray-700">Transform Blurry, Damaged, and Faded Face Photos with AI-Powered Face Photo Restore</p>
+        <h3 className="text-xl font-bold mt-6 mb-2 text-gray-800">What Face Photo Restore AI Can Fix</h3>
         <ul className="list-none pl-0 mb-6 text-base text-gray-700 space-y-2">
-          <li className="flex items-start"><span className="mr-2 text-blue-500">•</span>Can AI repair torn or scratched photos?</li>
-          <li className="flex items-start"><span className="mr-2 text-blue-500">•</span>How to restore heavily faded black-and-white images?</li>
-          <li className="flex items-start"><span className="mr-2 text-blue-500">•</span>What about pixelated or low-resolution old photos?</li>
+          <li className="flex items-start"><span className="mr-2 text-blue-500">•</span>Blurry and out-of-focus faces</li>
+          <li className="flex items-start"><span className="mr-2 text-blue-500">•</span>Damaged or scratched facial features</li>
+          <li className="flex items-start"><span className="mr-2 text-blue-500">•</span>Faded and low-contrast portraits</li>
+          <li className="flex items-start"><span className="mr-2 text-blue-500">•</span>Pixelated and low-resolution faces</li>
         </ul>
         <hr className="my-8 border-gray-200" />
-        <h2 className="text-3xl font-extrabold mt-8 mb-4 text-gray-900">Recover Photos from Any Device or Cloud</h2>
-        <p className="mb-4 text-lg text-gray-700">iPhone, Android, iCloud, Google Photos — We've Got You Covered</p>
-        <h3 className="text-xl font-bold mt-6 mb-2 text-gray-800">Photo Source Recovery Tips</h3>
+        <h2 className="text-3xl font-extrabold mt-8 mb-4 text-gray-900">Perfect for Any Portrait Source</h2>
+        <p className="mb-4 text-lg text-gray-700">Face Photo Restore Works with Photos from iPhone, Android, Old Cameras, and More</p>
+        <h3 className="text-xl font-bold mt-6 mb-2 text-gray-800">Ideal Photos for Face Photo Restore</h3>
         <ul className="list-none pl-0 mb-6 text-base text-gray-700 space-y-2">
-          <li className="flex items-start"><span className="mr-2 text-green-500">•</span>Restore recently deleted photos from iPhone or Android</li>
-          <li className="flex items-start"><span className="mr-2 text-green-500">•</span>Recover photos emptied from Google Photos bin</li>
-          <li className="flex items-start"><span className="mr-2 text-green-500">•</span>Restore lost pictures from iCloud or OneDrive</li>
+          <li className="flex items-start"><span className="mr-2 text-green-500">•</span>Old family portraits and vintage photos</li>
+          <li className="flex items-start"><span className="mr-2 text-green-500">•</span>Blurry smartphone selfies and group shots</li>
+          <li className="flex items-start"><span className="mr-2 text-green-500">•</span>Damaged photos from albums or storage</li>
+          <li className="flex items-start"><span className="mr-2 text-green-500">•</span>Low-quality social media profile pictures</li>
         </ul>
         <hr className="my-8 border-gray-200" />
-        <h2 className="text-3xl font-extrabold mt-8 mb-4 text-gray-900">Why Use Face Photo Restore?</h2>
-        <p className="mb-4 text-lg text-gray-700">100% Free | No Signup | Powered by AI | One-Click Repair</p>
-        <h3 className="text-xl font-bold mt-6 mb-2 text-gray-800">Tech Highlights</h3>
+        <h2 className="text-3xl font-extrabold mt-8 mb-4 text-gray-900">Why Choose Face Photo Restore?</h2>
+        <p className="mb-4 text-lg text-gray-700">Specialized AI | No Technical Skills Required | Instant Results</p>
+        <h3 className="text-xl font-bold mt-6 mb-2 text-gray-800">Face Photo Restore Key Features</h3>
         <ul className="list-none pl-0 mb-6 text-base text-gray-700 space-y-2">
-          <li className="flex items-start"><span className="mr-2 text-purple-500">•</span>State-of-the-art AI model, including HuggingFace & local deployment</li>
-          <li className="flex items-start"><span className="mr-2 text-purple-500">•</span>No need for Photoshop or photo editing skills</li>
-          <li className="flex items-start"><span className="mr-2 text-purple-500">•</span>Supports photo colorization and upscaling</li>
+          <li className="flex items-start"><span className="mr-2 text-purple-500">•</span>AI specifically trained for facial enhancement</li>
+          <li className="flex items-start"><span className="mr-2 text-purple-500">•</span>Preserves natural facial features and expressions</li>
+          <li className="flex items-start"><span className="mr-2 text-purple-500">•</span>One-click processing - no editing skills needed</li>
+          <li className="flex items-start"><span className="mr-2 text-purple-500">•</span>Maintains photo authenticity while improving clarity</li>
         </ul>
         <hr className="my-8 border-gray-200" />
-        <h2 className="text-3xl font-extrabold mt-8 mb-4 text-gray-900">Frequently Asked Questions</h2>
-        <p className="mb-4 text-lg text-gray-700">Can AI Really Fix My Old Photos? What If My Photos Were Deleted Years Ago?</p>
-        <h3 className="text-xl font-bold mt-6 mb-2 text-gray-800">User Questions</h3>
+        <h2 className="text-3xl font-extrabold mt-8 mb-4 text-gray-900">Face Photo Restore FAQ</h2>
+        <p className="mb-4 text-lg text-gray-700">How Does Face Photo Restore Work? Will It Look Natural?</p>
+        <h3 className="text-xl font-bold mt-6 mb-2 text-gray-800">Common Face Photo Restore Questions</h3>
         <ul className="list-none pl-0 mb-2 text-base text-gray-700 space-y-2">
-          <li className="flex items-start"><span className="mr-2 text-orange-500">•</span>Is it really free to use?</li>
-          <li className="flex items-start"><span className="mr-2 text-orange-500">•</span>Can I restore multiple photos at once?</li>
-          <li className="flex items-start"><span className="mr-2 text-orange-500">•</span>Is my uploaded photo safe and private?</li>
+          <li className="flex items-start"><span className="mr-2 text-orange-500">•</span>Is Face Photo Restore really free to try?</li>
+          <li className="flex items-start"><span className="mr-2 text-orange-500">•</span>Will the Face Photo Restore result look natural and realistic?</li>
+          <li className="flex items-start"><span className="mr-2 text-orange-500">•</span>How long does Face Photo Restore take to process a face photo?</li>
+          <li className="flex items-start"><span className="mr-2 text-orange-500">•</span>Can Face Photo Restore enhance multiple faces in one photo?</li>
         </ul>
       </section>
       <Footer />

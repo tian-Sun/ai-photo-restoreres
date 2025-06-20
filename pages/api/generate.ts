@@ -91,7 +91,7 @@ export default async function handler(
           resetDate.setDate(resetDate.getDate() + 1);
         }
         const diff = Math.abs(resetDate.getTime() - new Date().getTime());
-        const hours = Math.floor(diff / 1000 / 60 / 60);
+      const hours = Math.floor(diff / 1000 / 60 / 60);
         const minutes = Math.floor((diff / 1000 / 60) % 60);
 
         return res.status(429).json({
