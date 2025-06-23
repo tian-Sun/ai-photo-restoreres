@@ -159,13 +159,19 @@ const Home: NextPage = () => {
           Restore any face photo
         </h1>
         {status === 'authenticated' && data && (
-          <p className='text-slate-500'>
-            You have{' '}
-            <span className='font-semibold'>
-              {data.remainingGenerations} generations
-            </span>{' '}
-            left.
-          </p>
+          session?.user?.plan === 'PRO' ? (
+            <p className='text-blue-600'>
+              本月剩余 <span className='font-semibold'>{data.remainingProGenerations ?? 500}</span> 次修复
+            </p>
+          ) : (
+            <p className='text-slate-500'>
+              You have{' '}
+              <span className='font-semibold'>
+                {data.remainingGenerations}
+              </span>{' '}
+              generations left today.
+            </p>
+          )
         )}
         <div className='flex justify-between items-center w-full flex-col mt-4'>
           <Toggle

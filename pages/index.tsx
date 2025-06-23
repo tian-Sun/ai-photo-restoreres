@@ -2,12 +2,47 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import SquigglyLines from '../components/SquigglyLines';
 import { Testimonials } from '../components/Testimonials';
 
 const Home: NextPage = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const handleProUpgrade = async () => {
+    if (status === 'loading') {
+      return; 
+    }
+
+    if (!session) {
+      router.push('/auth/signin');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/subscription/get-payment-link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get payment link');
+      }
+
+      const { url } = await response.json();
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error getting payment link:', error);
+      alert('Failed to get payment link. Please try again.');
+    }
+  };
+  
   return (
     <div className='flex max-w-6xl mx-auto flex-col items-center justify-center py-2 min-h-screen'>
       <Head>
@@ -148,9 +183,12 @@ const Home: NextPage = () => {
               </li>
             </ul>
             <div className="text-center">
-              <Link href="/restore" className="inline-block bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+              <button 
+                onClick={handleProUpgrade}
+                className="inline-block bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300"
+              >
                 Upgrade to Pro Face Photo Restore
-              </Link>
+              </button>
             </div>
           </div>
         </div>
