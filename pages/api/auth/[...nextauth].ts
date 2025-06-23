@@ -14,21 +14,25 @@ export const authOptions: AuthOptions = {
     error: '/auth/error',
   },
   callbacks: {
-    // 这个函数会在JWT（JSON Web Token）被创建或更新时调用
+    // 在JWT创建或更新时调用
     async jwt({ token, user }) {
-      // 在用户首次登录时，`user` 对象是可用的。
-      // 我们将 user.id 添加到 token 中，它会被加密并保存在 cookie 里。
+      // 首次登录时，user对象是可用的。
+      // 我们从数据库的 user 对象中把所有需要的信息都存到 token 里。
       if (user) {
         token.id = user.id;
+        token.plan = user.plan;
+        token.credits = user.credits;
       }
       return token;
     },
 
-    // 这个函数在每次访问 session 时（比如调用 useSession）都会被调用
+    // 在每次访问 session 时调用
     async session({ session, token }) {
-      // 我们从服务端的 token 中获取 id，然后把它附加到客户端可见的 session 对象上。
+      // 我们从 token 中取出所有自定义字段，附加到 session.user 对象上。
       if (session.user) {
         session.user.id = token.id;
+        session.user.plan = token.plan;
+        session.user.credits = token.credits;
       }
       return session;
     },
