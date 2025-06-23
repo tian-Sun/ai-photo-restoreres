@@ -19,7 +19,7 @@ const Home: NextPage = () => {
     }
 
     if (!session) {
-      router.push('/auth/signin');
+      router.push('/restore');
       return;
     }
 
